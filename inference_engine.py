@@ -16,50 +16,20 @@ Jerarquía de arbitraje (de mayor a menor precedencia):
 from knowledge_base import REGLAS
 
 # ---------------------------------------------------------------------------
-# Orden clínico de evaluación (no es el orden del archivo knowledge_base.py)
-# ---------------------------------------------------------------------------
-ORDEN_PRIORIDAD = [
-    "R20",  #  1. Rechazo técnico — primera barrera, corta toda evaluación
-    "R8",   #  2. Sífilis VDRL reactivo → solicitar CLIA (acción intermedia)
-    "R9",   #  3. Sífilis: VDRL + CLIA reactivos → Diferido Temporal
-    "R10",  #  4. Sífilis: cicatriz serológica (VDRL neg, CLIA pos) → Diferido Temporal
-    "R2",   #  5. Zona Gris inicial → repetir por duplicado (acción intermedia)
-    "R13",  #  6. Zona Gris + NAT reactivo → confirma infección → Permanente
-    "R18",  #  7. Repetición también Zona Gris → Diferido Temporal por protocolo
-    "R19",  #  8. Repetición reactiva → Diferido Permanente confirmado
-    "R3",   #  9. Zona Gris + rep. No Reactivo → Descarte por precaución (Regla de Oro)
-    "R4",   # 10. NAT reactivo (ventana serológica) → Permanente
-    "R5",   # 11. SCO + NAT ambos reactivos → Permanente
-    "R7",   # 12. SCO reactivo, NAT no reactivo → Permanente (prioriza seguridad receptor)
-    "R11",  # 13. Chagas reactivo → Permanente
-    "R12",  # 14. HTLV I/II reactivo → Permanente
-    "R14",  # 15. Brucelosis reactiva → Diferido Temporal
-    "R15",  # 16. HCV reactivo → Permanente
-    "R16",  # 17. HBV reactivo → Permanente
-    "R17",  # 18. HIV reactivo → Permanente
-    "R6",   # 19. SCO no reactivo pero con riesgo conductual → Diferido Temporal
-    "R1",   # 20. Todo negativo → Apta / Habilitado
-]
-
-# Reglas que representan acciones intermedias (no producen decisión final por sí solas)
-REGLAS_ACCION = {"R2", "R8"}
-
-
-# ---------------------------------------------------------------------------
 # Funciones auxiliares
 # ---------------------------------------------------------------------------
 
 def _peso_decision(decision):
     """Devuelve el peso jerárquico de un diccionario de decisión para arbitraje."""
-    unidad = decision.get("unidad", "")
-    donante = decision.get("donante", "")
-    if unidad == "Cuarentena":
+    unidad  = (decision.get("unidad") or "").lower().strip()
+    donante = (decision.get("donante") or "").lower().strip()
+    if unidad == "cuarentena":
         return 4
-    if unidad == "Descarte" and donante == "Diferido Permanente":
+    if unidad == "descarte" and donante == "diferido permanente":
         return 3
-    if unidad == "Descarte" and donante == "Diferido Temporal":
+    if unidad == "descarte" and donante == "diferido temporal":
         return 2
-    if unidad == "Descarte":
+    if unidad == "descarte":
         return 1
     return 0  # Apta u otras
 
@@ -83,11 +53,15 @@ def match_condiciones(condiciones, hechos):
     """
     Verifica si todas las condiciones de una regla coinciden con los hechos.
     Lógica AND implícita: todas las claves deben satisfacerse.
-    Soporta igualdad exacta y comparación con listas (semántica OR).
+    Soporta igualdad exacta, comparación con listas (semántica OR)
+    y predicados callable (para rangos numéricos u otras condiciones complejas).
     """
     for clave, valor_esperado in condiciones.items():
         valor_actual = hechos.get(clave)
-        if isinstance(valor_esperado, (list, tuple)):
+        if callable(valor_esperado):
+            if not valor_esperado(valor_actual):
+                return False
+        elif isinstance(valor_esperado, (list, tuple)):
             if valor_actual not in valor_esperado:
                 return False
         else:
@@ -101,43 +75,24 @@ def evaluar_reglas(hechos):
     Aplica Forward Chaining sobre la Base de Conocimientos.
 
     Proceso:
-        1. Itera las reglas en ORDEN_PRIORIDAD.
+        1. Ordena las reglas dinámicamente por el campo "prioridad" (mayor primero).
         2. Dispara cada regla cuyas condiciones coincidan con hechos.
         3. R20 produce un corte inmediato (rechazo técnico).
-        4. R2 y R8 registran su acción pero no bloquean la búsqueda de decisión final.
+        4. Las reglas de acción intermedia (sin campo "unidad") se registran
+           pero no bloquean la búsqueda de decisión final.
         5. Al finalizar, arbitra conflictos por jerarquía y aplica fallback a Apta.
 
     Retorna: (decision_final: dict, reglas_activadas: list[dict])
     """
-    indice = {r["id"]: r for r in REGLAS}
+    reglas_ordenadas = sorted(REGLAS, key=lambda r: r.get("prioridad", 0), reverse=True)
     reglas_activadas = []
     decision_final = None
 
-    for regla_id in ORDEN_PRIORIDAD:
-        regla = indice.get(regla_id)
-        if not regla:
-            continue
+    for regla in reglas_ordenadas:
+        regla_id = regla["id"]
 
         if not match_condiciones(regla["condiciones"], hechos):
             continue
-
-        # ------------------------------------------------------------------
-        # Lógica difusa activa — R2: la acción concreta depende del valor
-        # matemático de certeza_sco, no solo de la etiqueta "Zona Gris".
-        #   certeza_sco < 30 %         → Solicitar nueva muestra del donante
-        #   30 % ≤ certeza_sco < 45 % → Pedir nueva muestra (baja certeza)
-        #   certeza_sco ≥ 45 %         → Repetir análisis por duplicado
-        # ------------------------------------------------------------------
-        if regla_id == "R2":
-            certeza_sco = hechos.get("certeza_sco", 100.0)
-            if certeza_sco < 30:
-                regla = {**regla,
-                         "accion": "Solicitar nueva muestra del donante "
-                                   "(certeza técnica insuficiente — valor próximo al límite Reactivo)"}
-            elif certeza_sco < 45:
-                regla = {**regla,
-                         "accion": "Pedir nueva muestra (Baja certeza técnica)"}
-            # Si certeza_sco ≥ 45: mantener "Repetir análisis por duplicado"
 
         reglas_activadas.append(regla)
 
@@ -152,8 +107,8 @@ def evaluar_reglas(hechos):
             }
             return decision_final, reglas_activadas
 
-        # Reglas de acción intermedia: se registran pero no bloquean la búsqueda
-        if regla_id in REGLAS_ACCION:
+        # Reglas de acción intermedia (sin "unidad"): se registran pero no bloquean
+        if regla.get("unidad") is None:
             continue
 
         # Arbitrar por jerarquía de decisión
@@ -165,10 +120,10 @@ def evaluar_reglas(hechos):
     # Post-iteración: fallbacks
     # ---------------------------------------------------------------------------
 
-    # Si solo dispararon reglas de acción (ej. R2 sin datos de repetición)
+    # Si solo dispararon reglas de acción (ej. R2_* sin datos de repetición)
     if decision_final is None:
         for regla in reglas_activadas:
-            if regla["id"] in REGLAS_ACCION:
+            if regla.get("unidad") is None:
                 decision_final = {
                     "unidad":    None,
                     "donante":   None,
@@ -181,10 +136,10 @@ def evaluar_reglas(hechos):
     # Fallback a Apta implícita: sin alertas, sin riesgo, S/CO negativo
     # (cubre marcadores sin NAT como Chagas/Brucelosis cuando todo es negativo)
     if decision_final is None:
-        sco_negativo = hechos.get("sco") == "No Reactivo"
-        sin_riesgo   = hechos.get("riesgo") == "No"
-        nat_ok       = hechos.get("nat") != "Reactivo"
-        vdrl_ok      = hechos.get("vdrl") != "Reactivo"
+        sco_negativo  = hechos.get("sco") == "No Reactivo"
+        sin_riesgo    = hechos.get("riesgo") == "No"
+        nat_ok        = hechos.get("nat") != "Reactivo"
+        vdrl_ok       = hechos.get("vdrl") != "Reactivo"
         sin_zona_gris = hechos.get("sco_inicial") != "Zona Gris"
 
         if sco_negativo and sin_riesgo and nat_ok and vdrl_ok and sin_zona_gris:

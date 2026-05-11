@@ -175,7 +175,7 @@ CASOS = [
     },
     {
         "id": "TC11",
-        "nombre": "Borde inferior Zona Gris — S/CO exacto 0.9 (R2 sin repetición)",
+        "nombre": "Borde inferior Zona Gris — S/CO exacto 0.9 (R2_alta_certeza sin repetición)",
         "datos": {
             "calidad_muestra":  "Normal",
             "marcador":         "HIV",
@@ -185,12 +185,12 @@ CASOS = [
         },
         "esperado": {
             "resultado": "Pendiente",
-            "regla":     "R2",
+            "regla":     "R2_alta_certeza",
         },
     },
     {
         "id": "TC12",
-        "nombre": "Borde superior Zona Gris — S/CO exacto 1.1 (R2 sin repetición)",
+        "nombre": "Borde superior Zona Gris — S/CO exacto 1.1 (R2_critica sin repetición)",
         "datos": {
             "calidad_muestra":  "Normal",
             "marcador":         "HCV",
@@ -200,7 +200,7 @@ CASOS = [
         },
         "esperado": {
             "resultado": "Pendiente",
-            "regla":     "R2",
+            "regla":     "R2_critica",
         },
     },
     {
