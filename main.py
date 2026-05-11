@@ -80,7 +80,7 @@ def _normalizar_json(caso):
     que espera fuzzy_engine.construir_hechos().
 
     Mapeos aplicados:
-        calidad_muestra "Óptima"  → "Normal"
+        calidad_muestra "Óptima" o "Normal"  → "Límpida"
         sco_inicial (float)       → sco_inicial_valor
         antecedente_riesgo (bool) → riesgo ("Sí" / "No")
         nat "No Disponible"       → campo eliminado
@@ -88,8 +88,8 @@ def _normalizar_json(caso):
     """
     norma = dict(caso)
 
-    if norma.get("calidad_muestra") == "Óptima":
-        norma["calidad_muestra"] = "Normal"
+    if norma.get("calidad_muestra") in ("Óptima", "Normal"):
+        norma["calidad_muestra"] = "Límpida"
 
     if "sco_inicial" in norma:
         norma["sco_inicial_valor"] = norma.pop("sco_inicial")
@@ -242,9 +242,9 @@ class App(tk.Tk):
 
         # Calidad de muestra
         _label(inner, "Calidad de la muestra", 9, color=PAL["texto_dim"]).pack(anchor="w", **pad)
-        self._calidad_var = tk.StringVar(value="Normal")
+        self._calidad_var = tk.StringVar(value="Límpida")
         calidad_cb = ttk.Combobox(inner, textvariable=self._calidad_var,
-                                  values=["Normal", "Hemolizada", "Lipémica"],
+                                  values=["Límpida", "Hemolizada", "Lipémica"],
                                   state="readonly", width=26)
         calidad_cb.pack(anchor="w", padx=16, pady=2)
         calidad_cb.bind("<<ComboboxSelected>>", self._on_calidad_change)
@@ -443,7 +443,7 @@ class App(tk.Tk):
 
     def _on_calidad_change(self, *_):
         """Deshabilita todo el formulario si la muestra es inválida."""
-        normal = self._calidad_var.get() == "Normal"
+        normal = self._calidad_var.get() == "Límpida"
         state = "normal" if normal else "disabled"
         for w in (self._sco_entry,):
             w.config(state=state)
@@ -453,7 +453,7 @@ class App(tk.Tk):
         marcador = self._marcador_var.get()
         es_sifilis = marcador == "Sífilis"
         es_nat     = marcador in MARCADORES_NAT
-        normal     = self._calidad_var.get() == "Normal"
+        normal     = self._calidad_var.get() == "Límpida"
 
         # Mostrar/ocultar secciones
         if es_sifilis and normal:
@@ -495,7 +495,7 @@ class App(tk.Tk):
         """Construye el dict de datos desde el formulario. Lanza ValueError si hay error."""
         datos = {"calidad_muestra": self._calidad_var.get()}
 
-        if datos["calidad_muestra"] != "Normal":
+        if datos["calidad_muestra"] != "Límpida":
             return datos
 
         marcador = self._marcador_var.get()
@@ -543,7 +543,7 @@ class App(tk.Tk):
         self._clia_var.set("No Reactivo")
         self._riesgo_var.set("No")
         self._marcador_var.set("HIV")
-        self._calidad_var.set("Normal")
+        self._calidad_var.set("Límpida")
         self._sco_label.config(text="")
         self._on_marcador_change()
         self._reset_result_panel()
