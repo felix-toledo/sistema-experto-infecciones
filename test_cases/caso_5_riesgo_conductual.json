@@ -1,0 +1,11 @@
+{
+    "nombre": "Riesgo Conductual",
+    "sco_inicial": 0.1,
+    "repeticion": null,
+    "nat": "No Reactivo",
+    "marcador": "HIV",
+    "antecedente_riesgo": true,
+    "vdrl": "No Reactivo",
+    "clia": "No Reactivo",
+    "calidad_muestra": "Óptima"
+}

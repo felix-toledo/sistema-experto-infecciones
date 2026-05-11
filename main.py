@@ -71,6 +71,39 @@ def _separator(parent, color=None):
 
 
 # ---------------------------------------------------------------------------
+# Normalización de JSON externo
+# ---------------------------------------------------------------------------
+
+def _normalizar_json(caso):
+    """
+    Traduce el formato externo de los JSON de casos al formato interno
+    que espera fuzzy_engine.construir_hechos().
+
+    Mapeos aplicados:
+        calidad_muestra "Óptima"  → "Normal"
+        sco_inicial (float)       → sco_inicial_valor
+        antecedente_riesgo (bool) → riesgo ("Sí" / "No")
+        nat "No Disponible"       → campo eliminado
+        repeticion (str label)    → se pasa directo (construir_hechos lo acepta)
+    """
+    norma = dict(caso)
+
+    if norma.get("calidad_muestra") == "Óptima":
+        norma["calidad_muestra"] = "Normal"
+
+    if "sco_inicial" in norma:
+        norma["sco_inicial_valor"] = norma.pop("sco_inicial")
+
+    if "antecedente_riesgo" in norma:
+        norma["riesgo"] = "Sí" if norma.pop("antecedente_riesgo") else "No"
+
+    if norma.get("nat") == "No Disponible":
+        norma.pop("nat")
+
+    return norma
+
+
+# ---------------------------------------------------------------------------
 # Ventana principal
 # ---------------------------------------------------------------------------
 
@@ -531,7 +564,7 @@ class App(tk.Tk):
             return
 
         casos = contenido if isinstance(contenido, list) else [contenido]
-        resultados = [evaluar_caso(c) for c in casos]
+        resultados = [evaluar_caso(_normalizar_json(c)) for c in casos]
 
         # Si es un caso único, mostrarlo en el panel principal
         if len(resultados) == 1:
@@ -814,7 +847,7 @@ if __name__ == "__main__":
             contenido = json.load(f)
         casos = contenido if isinstance(contenido, list) else [contenido]
         for i, caso in enumerate(casos, 1):
-            res = evaluar_caso(caso)
+            res = evaluar_caso(_normalizar_json(caso))
             print(res["explicacion"])
             print(f"  Reglas: {', '.join(res['reglas_activadas'])}\n")
     else:

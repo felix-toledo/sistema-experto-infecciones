@@ -1,0 +1,11 @@
+{
+    "nombre": "Serología Dudosa — Zona Gris",
+    "sco_inicial": 1.0,
+    "repeticion": "No Reactivo",
+    "nat": "No Reactivo",
+    "marcador": "HIV",
+    "antecedente_riesgo": false,
+    "vdrl": "No Reactivo",
+    "clia": "No Reactivo",
+    "calidad_muestra": "Óptima"
+}

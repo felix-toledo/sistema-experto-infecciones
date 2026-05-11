@@ -87,6 +87,12 @@ def construir_hechos(datos):
         # 'sco_repeticion' para R18/R19, 'repeticion' para R3
         hechos["sco_repeticion"] = etiqueta_rep
         hechos["repeticion"] = etiqueta_rep
+    else:
+        # Etiqueta ya clasificada (ej: viene directo de JSON externo)
+        rep_label = datos.get("repeticion")
+        if rep_label is not None:
+            hechos["sco_repeticion"] = rep_label
+            hechos["repeticion"] = rep_label
 
     # --- NAT: solo válido para HIV, HBV y HCV ------------------------------------
     nat = datos.get("nat")

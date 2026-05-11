@@ -77,7 +77,7 @@ Para la implementación, Copilot y el equipo deben respetar estas definiciones:
 
 1. **Clonar el repositorio:**
 ```bash
-git clone [url-del-repo]
+git clone https://github.com/felix-toledo/sistema-experto-infecciones
 cd se-infecciones-itt
 
 ```

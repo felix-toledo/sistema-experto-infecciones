@@ -1,0 +1,11 @@
+{
+    "nombre": "Donante Sano",
+    "sco_inicial": 0.2,
+    "repeticion": null,
+    "nat": "No Reactivo",
+    "marcador": "HIV",
+    "antecedente_riesgo": false,
+    "vdrl": "No Reactivo",
+    "clia": "No Reactivo",
+    "calidad_muestra": "Óptima"
+}

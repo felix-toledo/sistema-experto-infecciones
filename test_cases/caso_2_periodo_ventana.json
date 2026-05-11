@@ -1,0 +1,11 @@
+{
+    "nombre": "Período de Ventana",
+    "sco_inicial": 0.5,
+    "repeticion": null,
+    "nat": "Reactivo",
+    "marcador": "HIV",
+    "antecedente_riesgo": false,
+    "vdrl": "No Reactivo",
+    "clia": "No Reactivo",
+    "calidad_muestra": "Óptima"
+}
