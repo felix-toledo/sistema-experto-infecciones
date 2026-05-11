@@ -1,0 +1,3 @@
+# Sistema Experto de Seguridad Transfusional (ITT)
+# Motor difuso implementado manualmente — no requiere dependencias externas.
+# Solo se usa la biblioteca estándar de Python (>= 3.8).
