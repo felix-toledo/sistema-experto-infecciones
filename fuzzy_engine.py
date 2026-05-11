@@ -27,8 +27,13 @@ def fuzzificar_sco(sco_valor):
         return "No Reactivo", round(certeza, 2)
 
     if sco_valor <= 1.1:
-        # Toda la zona gris representa incertidumbre máxima
-        return "Zona Gris", 100.0
+        # Certeza decreciente según posición en la banda: 100 % en el borde
+        # inferior (0.9, próximo a No Reactivo) → 0 % en el borde superior
+        # (1.1, próximo a Reactivo). Permite que la lógica difusa elija la
+        # acción correcta: repetir muestra vs. solicitar nueva muestra del
+        # donante, según cuán cerca del umbral Reactivo cae el valor.
+        certeza = round(((1.1 - sco_valor) / 0.2) * 100, 2)
+        return "Zona Gris", certeza
 
     # Función trapezoidal ascendente: 0 % en 1.1, 100 % en 6.1
     certeza = min(100.0, ((sco_valor - 1.1) / 5.0) * 100)
@@ -114,9 +119,9 @@ def construir_hechos(datos):
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     print(fuzzificar_sco(0.2))   # ('No Reactivo', 77.78)
-    print(fuzzificar_sco(0.9))   # ('Zona Gris', 100.0)   ← borde inferior
-    print(fuzzificar_sco(1.0))   # ('Zona Gris', 100.0)
-    print(fuzzificar_sco(1.1))   # ('Zona Gris', 100.0)   ← borde superior
+    print(fuzzificar_sco(0.9))   # ('Zona Gris', 100.0)  ← borde inferior, certeza max
+    print(fuzzificar_sco(1.0))   # ('Zona Gris', 50.0)   ← centro de la banda
+    print(fuzzificar_sco(1.1))   # ('Zona Gris', 0.0)    ← borde superior, certeza min
     print(fuzzificar_sco(4.5))   # ('Reactivo', 68.0)
 
     datos_ejemplo = {

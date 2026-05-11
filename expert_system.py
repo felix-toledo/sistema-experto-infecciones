@@ -11,6 +11,7 @@ API pública: evaluar_caso(datos) → dict
 
 from fuzzy_engine import construir_hechos
 from inference_engine import evaluar_reglas
+from explicador import generar_explicacion
 
 
 # ---------------------------------------------------------------------------
@@ -49,7 +50,7 @@ def evaluar_caso(datos):
         }
 
     # Fase 3 — Subsistema de Explicación
-    explicacion = _generar_explicacion(datos, hechos, decision, reglas_activadas)
+    explicacion = generar_explicacion(datos, hechos, decision, reglas_activadas)
 
     return {
         "unidad":           decision.get("unidad"),
@@ -63,89 +64,3 @@ def evaluar_caso(datos):
     }
 
 
-# ---------------------------------------------------------------------------
-# Subsistema de Explicación
-# ---------------------------------------------------------------------------
-
-def _generar_explicacion(datos, hechos, decision, reglas_activadas):
-    """
-    Genera la narrativa de trazabilidad de la decisión.
-    Incluye: clasificación S/CO, certeza difusa, reglas disparadas con su
-    justificación científica, y la decisión final estructurada.
-    """
-    lineas = []
-    sep = "=" * 62
-
-    lineas.append(sep)
-    lineas.append("  SUBSISTEMA DE EXPLICACIÓN — TRAZABILIDAD DE DECISIÓN")
-    lineas.append(sep)
-
-    # Datos del análisis
-    marcador = datos.get("marcador", "N/A")
-    lineas.append(f"  Marcador evaluado : {marcador}")
-
-    sco_val = datos.get("sco_inicial_valor")
-    if sco_val is not None:
-        etiqueta = hechos.get("sco_inicial", "N/A")
-        certeza  = hechos.get("certeza_sco", 0.0)
-        lineas.append(f"  S/CO inicial      : {sco_val:.2f}  →  [{etiqueta}]  "
-                      f"(Certeza fuzzy: {certeza:.1f} %)")
-
-    sco_rep_val = datos.get("sco_rep_valor")
-    if sco_rep_val is not None:
-        etiqueta_rep = hechos.get("sco_repeticion", "N/A")
-        lineas.append(f"  S/CO repetición   : {sco_rep_val:.2f}  →  [{etiqueta_rep}]")
-
-    if datos.get("vdrl"):
-        lineas.append(f"  VDRL              : {datos['vdrl']}")
-    if datos.get("clia"):
-        lineas.append(f"  CLIA              : {datos['clia']}")
-    if datos.get("nat"):
-        lineas.append(f"  NAT               : {datos['nat']}")
-
-    calidad = datos.get("calidad_muestra", "Normal")
-    if calidad != "Normal":
-        lineas.append(f"  Calidad muestra   : {calidad}")
-
-    lineas.append("")
-
-    # Reglas disparadas
-    lineas.append("  REGLAS DISPARADAS (en orden de evaluación clínica):")
-    lineas.append("  " + "-" * 58)
-
-    if not reglas_activadas:
-        lineas.append("    (Ninguna regla específica disparada)")
-    else:
-        for i, regla in enumerate(reglas_activadas, 1):
-            lineas.append(f"  [{i}] {regla['id']}")
-            lineas.append(f"       {regla['justificacion']}")
-            if regla.get("accion"):
-                lineas.append(f"       → Acción requerida: {regla['accion']}")
-
-    lineas.append("")
-
-    # Decisión final
-    lineas.append("  DECISIÓN FINAL:")
-    lineas.append("  " + "-" * 58)
-
-    if decision.get("resultado") == "Rechazo Técnico":
-        lineas.append(f"  Estado unidad  : {decision.get('unidad', 'Cuarentena')}")
-        lineas.append(f"  Resultado      : Rechazo Técnico — muestra no apta para análisis")
-
-    elif decision.get("resultado") == "Pendiente":
-        lineas.append(f"  Estado unidad  : Pendiente — se requiere acción adicional")
-        lineas.append(f"  Acción         : {decision.get('accion')}")
-
-    elif decision.get("unidad") == "Apta":
-        lineas.append(f"  Estado unidad  : ✔ APTA para transfusión")
-        lineas.append(f"  Estado donante : {decision.get('donante', 'Habilitado')}")
-
-    else:
-        lineas.append(f"  Estado unidad  : ✘ {decision.get('unidad', 'Descarte')}")
-        lineas.append(f"  Estado donante : {decision.get('donante', 'N/A')}")
-        if decision.get("accion"):
-            lineas.append(f"  Acción         : {decision.get('accion')}")
-
-    lineas.append(sep)
-
-    return "\n".join(lineas)

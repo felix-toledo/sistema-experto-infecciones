@@ -121,6 +121,24 @@ def evaluar_reglas(hechos):
         if not match_condiciones(regla["condiciones"], hechos):
             continue
 
+        # ------------------------------------------------------------------
+        # Lógica difusa activa — R2: la acción concreta depende del valor
+        # matemático de certeza_sco, no solo de la etiqueta "Zona Gris".
+        #   certeza_sco < 30 %         → Solicitar nueva muestra del donante
+        #   30 % ≤ certeza_sco < 45 % → Pedir nueva muestra (baja certeza)
+        #   certeza_sco ≥ 45 %         → Repetir análisis por duplicado
+        # ------------------------------------------------------------------
+        if regla_id == "R2":
+            certeza_sco = hechos.get("certeza_sco", 100.0)
+            if certeza_sco < 30:
+                regla = {**regla,
+                         "accion": "Solicitar nueva muestra del donante "
+                                   "(certeza técnica insuficiente — valor próximo al límite Reactivo)"}
+            elif certeza_sco < 45:
+                regla = {**regla,
+                         "accion": "Pedir nueva muestra (Baja certeza técnica)"}
+            # Si certeza_sco ≥ 45: mantener "Repetir análisis por duplicado"
+
         reglas_activadas.append(regla)
 
         # R20: corte inmediato — ninguna otra regla se evalúa
