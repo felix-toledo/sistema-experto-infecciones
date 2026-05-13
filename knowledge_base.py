@@ -49,8 +49,8 @@ REGLAS = [
         "id": "R7",
         "condiciones": {"sco": "Reactivo", "nat": "No Reactivo"},
         "unidad": "Descarte", 
-        "donante": "Diferido Permanente",
-        "justificacion": "Reactividad serológica persistente; se prioriza la seguridad del receptor de la unidad."
+        "donante": "Diferido Temporal",
+        "justificacion": "R7: Discordancia Serología/NAT. Se detectó reactividad en el tamizaje químico pero ausencia de carga viral por biología molecular. Esto sugiere un posible falso positivo serológico o una infección crónica con viremia indetectable. Se requiere seguimiento médico y pruebas suplementarias para definir la aptitud del donante."
     },
     {
         "id": "R8",
