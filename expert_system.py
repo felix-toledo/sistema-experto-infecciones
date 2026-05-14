@@ -49,6 +49,10 @@ def evaluar_caso(datos):
             "certeza":   0.0,
         }
 
+    marcador = datos.get("marcador", "N/A")
+    if decision is not None and decision.get("unidad") == "Apta":
+        decision["unidad"] = f"Marcador {marcador} Negativo / Apto"
+
     # Fase 3 — Subsistema de Explicación
     explicacion = generar_explicacion(datos, hechos, decision, reglas_activadas)
 
@@ -61,6 +65,7 @@ def evaluar_caso(datos):
         "sco_etiqueta":     hechos.get("sco_inicial"),
         "reglas_activadas": [r["id"] for r in reglas_activadas],
         "explicacion":      explicacion,
+        "marcador":         marcador,
     }
 
 

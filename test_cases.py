@@ -25,7 +25,7 @@ CASOS = [
             "riesgo":          "No",
         },
         "esperado": {
-            "unidad":  "Apta",
+            "unidad":  "Marcador HIV Negativo / Apto",
             "donante": "Habilitado",
             "regla":   "R1",
         },

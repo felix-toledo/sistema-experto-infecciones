@@ -118,8 +118,9 @@ def generar_explicacion(datos, hechos, decision, reglas_activadas):
         lineas.append(f"  Estado unidad  : Pendiente — se requiere acción adicional")
         lineas.append(f"  Acción         : {decision.get('accion')}")
 
-    elif decision.get("unidad") == "Apta":
-        lineas.append(f"  Estado unidad  : ✔ APTA para transfusión")
+    elif decision.get("unidad") and "Apto" in decision.get("unidad"):
+        lineas.append(f"  Estado unidad  : ✔ {decision.get('unidad')}")
+        lineas.append(f"                   El marcador analizado no presenta riesgos bajo los criterios actuales de S/CO y NAT.")
         lineas.append(f"  Estado donante : {decision.get('donante', 'Habilitado')}")
 
     else:
