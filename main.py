@@ -258,8 +258,12 @@ class App(tk.Tk):
         marcador_cb.pack(anchor="w", padx=16, pady=2)
         marcador_cb.bind("<<ComboboxSelected>>", lambda e: self._on_marcador_change())
 
+        # Contenedor dinámico para evitar que el reflow empuje los botones
+        self._dynamic_container = tk.Frame(inner, bg=PAL["panel"])
+        self._dynamic_container.pack(fill="x")
+
         # S/CO inicial
-        self._sco_frame = tk.Frame(inner, bg=PAL["panel"])
+        self._sco_frame = tk.Frame(self._dynamic_container, bg=PAL["panel"])
         self._sco_frame.pack(fill="x")
         _label(self._sco_frame, "Valor S/CO inicial", 9,
                color=PAL["texto_dim"]).pack(anchor="w", **pad)
@@ -278,7 +282,7 @@ class App(tk.Tk):
         self._sco_var.trace_add("write", self._on_sco_change)
 
         # S/CO repetición
-        self._rep_frame = tk.Frame(inner, bg=PAL["panel"])
+        self._rep_frame = tk.Frame(self._dynamic_container, bg=PAL["panel"])
         self._rep_frame.pack(fill="x")
         _label(self._rep_frame, "Valor S/CO repetición", 9,
                color=PAL["texto_dim"]).pack(anchor="w", **pad)
@@ -290,7 +294,7 @@ class App(tk.Tk):
                      anchor="w", padx=16, pady=2)
 
         # NAT
-        self._nat_frame = tk.Frame(inner, bg=PAL["panel"])
+        self._nat_frame = tk.Frame(self._dynamic_container, bg=PAL["panel"])
         self._nat_frame.pack(fill="x")
         _label(self._nat_frame, "Resultado NAT", 9,
                color=PAL["texto_dim"]).pack(anchor="w", **pad)
@@ -300,7 +304,7 @@ class App(tk.Tk):
                      state="readonly", width=26).pack(anchor="w", padx=16, pady=2)
 
         # VDRL / CLIA (solo Sífilis)
-        self._sifilis_frame = tk.Frame(inner, bg=PAL["panel"])
+        self._sifilis_frame = tk.Frame(self._dynamic_container, bg=PAL["panel"])
         self._sifilis_frame.pack(fill="x")
         _label(self._sifilis_frame, "VDRL (Sífilis)", 9,
                color=PAL["texto_dim"]).pack(anchor="w", **pad)
@@ -320,7 +324,7 @@ class App(tk.Tk):
         self._clia_cb.pack(anchor="w", padx=16, pady=2)
 
         # Riesgo conductual
-        self._riesgo_frame = tk.Frame(inner, bg=PAL["panel"])
+        self._riesgo_frame = tk.Frame(self._dynamic_container, bg=PAL["panel"])
         self._riesgo_frame.pack(fill="x")
         _separator(self._riesgo_frame).pack(fill="x", padx=16, pady=8)
         _label(self._riesgo_frame, "Factor de riesgo conductual", 9,
@@ -367,6 +371,11 @@ class App(tk.Tk):
                                      font=font.Font(family="Segoe UI", size=9),
                                      fg=PAL["texto_dim"], bg=PAL["card"], anchor="w")
         self._verdict_sub.pack(fill="x")
+
+        self._verdict_note = tk.Label(self._verdict_frame, text="",
+                                      font=font.Font(family="Segoe UI", size=8, slant="italic"),
+                                      fg=PAL["texto_dim"], bg=PAL["card"], anchor="w")
+        self._verdict_note.pack(fill="x", pady=(4, 0))
 
         # Badges de estado
         badges_row = tk.Frame(parent, bg=PAL["bg"])
@@ -585,6 +594,7 @@ class App(tk.Tk):
             text="Ingrese los datos y presione  ⚕ Evaluar caso",
             fg=PAL["texto_dim"], bg=PAL["card"])
         self._verdict_sub.config(text="", bg=PAL["card"])
+        self._verdict_note.config(text="", bg=PAL["card"])
         for lbl in (self._badge_unidad, self._badge_donante,
                     self._badge_certeza, self._badge_reglas):
             lbl.config(text="—", fg=PAL["texto"])
@@ -605,18 +615,23 @@ class App(tk.Tk):
             color = PAL["cuarentena"]
             titulo = "⚠  CUARENTENA — Rechazo Técnico"
             sub = "La calidad de la muestra impide el análisis. Nueva muestra requerida."
+            self._verdict_note.config(text="", bg=color)
         elif resultado == "Pendiente":
             color = PAL["pendiente"]
             titulo = "⏳  PENDIENTE — Acción Requerida"
             sub = res.get("accion") or "Se requiere una acción adicional antes de decidir."
-        elif unidad == "Apta":
+            self._verdict_note.config(text="", bg=color)
+        elif unidad and "Apto" in unidad:
             color = PAL["apta"]
-            titulo = "✔  UNIDAD APTA para transfusión"
+            marcador = res.get("marcador", "").upper()
+            titulo = f"✔  RESULTADO: MARCADOR {marcador} NEGATIVO"
             sub = f"Donante: {donante or 'Habilitado'}"
+            self._verdict_note.config(text="Nota: La aptitud final de la unidad de sangre requiere la validación negativa de todos los marcadores obligatorios (Ley 22.990).", fg="white", bg=color)
         else:
             color = PAL["descarte"]
             titulo = f"✘  DESCARTE — {donante or 'Sin clasificación de donante'}"
             sub = "La unidad no puede utilizarse para transfusión."
+            self._verdict_note.config(text="", bg=color)
 
         self._verdict_frame.config(bg=color)
         self._verdict_title.config(text=titulo, fg="white", bg=color)
