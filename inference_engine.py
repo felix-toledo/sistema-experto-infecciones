@@ -7,8 +7,8 @@ registrando cada regla disparada y resolviendo conflictos por jerarquía de deci
 
 Jerarquía de arbitraje (de mayor a menor precedencia):
     4 — Cuarentena / Rechazo Técnico  (R20)
-    3 — Descarte + Diferido Permanente (infección confirmada, sin reingreso)
-    2 — Descarte + Diferido Temporal   (infección tratable o duda inicial)
+    3 — Descarte + Diferido permanente (infección confirmada, sin reingreso)
+    2 — Descarte + Diferido temporal   (infección tratable o duda inicial)
     1 — Descarte sin estado de donante explícito
     0 — Apta / Habilitado
 """
@@ -21,23 +21,23 @@ from knowledge_base import REGLAS
 ORDEN_PRIORIDAD = [
     "R20",  #  1. Rechazo técnico — primera barrera, corta toda evaluación
     "R8",   #  2. Sífilis VDRL reactivo → solicitar CLIA (acción intermedia)
-    "R9",   #  3. Sífilis: VDRL + CLIA reactivos → Diferido Temporal
-    "R10",  #  4. Sífilis: cicatriz serológica (VDRL neg, CLIA pos) → Diferido Temporal
-    "R2",   #  5. Zona Gris inicial → repetir por duplicado (acción intermedia)
-    "R13",  #  6. Zona Gris + NAT reactivo → confirma infección → Permanente
-    "R18",  #  7. Repetición también Zona Gris → Diferido Temporal por protocolo
-    "R19",  #  8. Repetición reactiva → Diferido Permanente confirmado
-    "R3",   #  9. Zona Gris + rep. No Reactivo → Descarte por precaución (Regla de Oro)
-    "R4",   # 10. NAT reactivo (ventana serológica) → Permanente
-    "R5",   # 11. SCO + NAT ambos reactivos → Permanente
-    "R7",   # 12. SCO reactivo, NAT no reactivo → Permanente (prioriza seguridad receptor)
-    "R11",  # 13. Chagas reactivo → Permanente
-    "R12",  # 14. HTLV I/II reactivo → Permanente
-    "R14",  # 15. Brucelosis reactiva → Diferido Temporal
-    "R15",  # 16. HCV reactivo → Permanente
-    "R16",  # 17. HBV reactivo → Permanente
-    "R17",  # 18. HIV reactivo → Permanente
-    "R6",   # 19. SCO no reactivo pero con riesgo conductual → Diferido Temporal
+    "R9",   #  3. Sífilis: VDRL + CLIA reactivos → Diferido temporal
+    "R10",  #  4. Sífilis: cicatriz serológica (VDRL neg, CLIA pos) → Diferido temporal
+    "R2",   #  5. Zona gris inicial → repetir por duplicado (acción intermedia)
+    "R13",  #  6. Zona gris + NAT reactivo → confirma infección → permanente
+    "R18",  #  7. Repetición también Zona gris → Diferido temporal por protocolo
+    "R19",  #  8. Repetición reactiva → Diferido permanente confirmado
+    "R3",   #  9. Zona gris + rep. No Reactivo → Descarte por precaución (Regla de Oro)
+    "R4",   # 10. NAT reactivo (ventana serológica) → permanente
+    "R5",   # 11. SCO + NAT ambos reactivos → permanente
+    "R7",   # 12. SCO reactivo, NAT no reactivo → permanente (prioriza seguridad receptor)
+    "R11",  # 13. Chagas reactivo → permanente
+    "R12",  # 14. HTLV I/II reactivo → permanente
+    "R14",  # 15. Brucelosis reactiva → Diferido temporal
+    "R15",  # 16. HCV reactivo → permanente
+    "R16",  # 17. HBV reactivo → permanente
+    "R17",  # 18. HIV reactivo → permanente
+    "R6",   # 19. SCO no reactivo pero con riesgo conductual → Diferido temporal
     "R1",   # 20. Todo negativo → Apta / Habilitado
 ]
 
@@ -55,9 +55,9 @@ def _peso_decision(decision):
     donante = decision.get("donante", "")
     if unidad == "Cuarentena":
         return 4
-    if unidad == "Descarte" and donante == "Diferido Permanente":
+    if unidad == "Descarte" and donante == "Diferido permanente":
         return 3
-    if unidad == "Descarte" and donante == "Diferido Temporal":
+    if unidad == "Descarte" and donante == "Diferido temporal":
         return 2
     if unidad == "Descarte":
         return 1
@@ -123,7 +123,7 @@ def evaluar_reglas(hechos):
 
         # ------------------------------------------------------------------
         # Lógica difusa activa — R2: la acción concreta depende del valor
-        # matemático de certeza_sco, no solo de la etiqueta "Zona Gris".
+        # matemático de certeza_sco, no solo de la etiqueta "Zona gris".
         #   certeza_sco < 30 %         → Solicitar nueva muestra del donante
         #   30 % ≤ certeza_sco < 45 % → Pedir nueva muestra (baja certeza)
         #   certeza_sco ≥ 45 %         → Repetir análisis por duplicado
@@ -185,7 +185,7 @@ def evaluar_reglas(hechos):
         sin_riesgo   = hechos.get("riesgo") == "No"
         nat_ok       = hechos.get("nat") != "Reactivo"
         vdrl_ok      = hechos.get("vdrl") != "Reactivo"
-        sin_zona_gris = hechos.get("sco_inicial") != "Zona Gris"
+        sin_zona_gris = hechos.get("sco_inicial") != "Zona gris"
 
         if sco_negativo and sin_riesgo and nat_ok and vdrl_ok and sin_zona_gris:
             decision_final = {

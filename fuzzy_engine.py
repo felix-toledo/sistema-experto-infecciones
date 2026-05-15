@@ -3,7 +3,7 @@ Motor de Lógica Difusa del Sistema Experto de Seguridad Transfusional.
 Clasifica valores numéricos S/CO en etiquetas lingüísticas y calcula el nivel
 de certeza de la clasificación mediante funciones de pertenencia trapezoidales.
 
-Rangos de Zona Gris: 0.9 <= S/CO <= 1.1 (estricto, según norma del banco de sangre).
+Rangos de Zona gris: 0.9 <= S/CO <= 1.1 (estricto, según norma del banco de sangre).
 """
 
 # Marcadores para los que aplica la prueba de ácidos nucleicos (NAT)
@@ -16,7 +16,7 @@ def fuzzificar_sco(sco_valor):
 
     Función de pertenencia por zonas:
       - No Reactivo : S/CO < 0.9   → certeza crece a medida que el valor baja
-      - Zona Gris   : 0.9 ≤ S/CO ≤ 1.1 → certeza = 100 % (máxima duda, requiere acción)
+      - Zona gris   : 0.9 ≤ S/CO ≤ 1.1 → certeza = 100 % (máxima duda, requiere acción)
       - Reactivo    : S/CO > 1.1   → certeza crece a medida que el valor sube
 
     Retorna: (etiqueta: str, certeza: float)  — certeza en porcentaje [0-100].
@@ -33,7 +33,7 @@ def fuzzificar_sco(sco_valor):
         # acción correcta: repetir muestra vs. solicitar nueva muestra del
         # donante, según cuán cerca del umbral Reactivo cae el valor.
         certeza = round(((1.1 - sco_valor) / 0.2) * 100, 2)
-        return "Zona Gris", certeza
+        return "Zona gris", certeza
 
     # Función trapezoidal ascendente: 0 % en 1.1, 100 % en 6.1
     certeza = min(100.0, ((sco_valor - 1.1) / 5.0) * 100)
@@ -119,9 +119,9 @@ def construir_hechos(datos):
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     print(fuzzificar_sco(0.2))   # ('No Reactivo', 77.78)
-    print(fuzzificar_sco(0.9))   # ('Zona Gris', 100.0)  ← borde inferior, certeza max
-    print(fuzzificar_sco(1.0))   # ('Zona Gris', 50.0)   ← centro de la banda
-    print(fuzzificar_sco(1.1))   # ('Zona Gris', 0.0)    ← borde superior, certeza min
+    print(fuzzificar_sco(0.9))   # ('Zona gris', 100.0)  ← borde inferior, certeza max
+    print(fuzzificar_sco(1.0))   # ('Zona gris', 50.0)   ← centro de la banda
+    print(fuzzificar_sco(1.1))   # ('Zona gris', 0.0)    ← borde superior, certeza min
     print(fuzzificar_sco(4.5))   # ('Reactivo', 68.0)
 
     datos_ejemplo = {

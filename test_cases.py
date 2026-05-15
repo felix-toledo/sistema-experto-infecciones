@@ -2,7 +2,7 @@
 Suite de validación del Sistema Experto de Seguridad Transfusional.
 
 Incluye los 6 casos obligatorios del README más casos borde para
-verificar reglas críticas y los límites de la Zona Gris.
+verificar reglas críticas y los límites de la Zona gris.
 """
 
 from expert_system import evaluar_caso
@@ -42,13 +42,13 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Permanente",
+            "donante": "Diferido permanente",
             "regla":   "R4",
         },
     },
     {
         "id": "TC03",
-        "nombre": "Regla de Oro — Zona Gris inicial + repetición No Reactiva (R3)",
+        "nombre": "Regla de Oro — Zona gris inicial + repetición No Reactiva (R3)",
         "datos": {
             "calidad_muestra":  "Normal",
             "marcador":         "HBV",
@@ -59,7 +59,7 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Temporal",
+            "donante": "Diferido temporal",
             "regla":   "R3",
         },
     },
@@ -74,7 +74,7 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Temporal",
+            "donante": "Diferido temporal",
             "regla":   "R9",
         },
     },
@@ -89,7 +89,7 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Temporal",
+            "donante": "Diferido temporal",
             "regla":   "R6",
         },
     },
@@ -119,7 +119,7 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Permanente",
+            "donante": "Diferido permanente",
             "regla":   "R11",
         },
     },
@@ -135,13 +135,13 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Permanente",
+            "donante": "Diferido permanente",
             "regla":   "R5",
         },
     },
     {
         "id": "TC09",
-        "nombre": "Zona Gris + repetición reactiva — confirmación (R19)",
+        "nombre": "Zona gris + repetición reactiva — confirmación (R19)",
         "datos": {
             "calidad_muestra":  "Normal",
             "marcador":         "HCV",
@@ -152,13 +152,13 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Permanente",
+            "donante": "Diferido permanente",
             "regla":   "R19",
         },
     },
     {
         "id": "TC10",
-        "nombre": "Zona Gris + repetición Zona Gris — indeterminado persistente (R18)",
+        "nombre": "Zona gris + repetición Zona gris — indeterminado persistente (R18)",
         "datos": {
             "calidad_muestra":  "Normal",
             "marcador":         "HBV",
@@ -169,13 +169,13 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Temporal",
+            "donante": "Diferido temporal",
             "regla":   "R18",
         },
     },
     {
         "id": "TC11",
-        "nombre": "Borde inferior Zona Gris — S/CO exacto 0.9 (R2 sin repetición)",
+        "nombre": "Borde inferior Zona gris — S/CO exacto 0.9 (R2 sin repetición)",
         "datos": {
             "calidad_muestra":  "Normal",
             "marcador":         "HIV",
@@ -190,7 +190,7 @@ CASOS = [
     },
     {
         "id": "TC12",
-        "nombre": "Borde superior Zona Gris — S/CO exacto 1.1 (R2 sin repetición)",
+        "nombre": "Borde superior Zona gris — S/CO exacto 1.1 (R2 sin repetición)",
         "datos": {
             "calidad_muestra":  "Normal",
             "marcador":         "HCV",
@@ -214,7 +214,7 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Temporal",
+            "donante": "Diferido temporal",
             "regla":   "R14",
         },
     },
@@ -232,7 +232,7 @@ CASOS = [
     },
     {
         "id": "TC15",
-        "nombre": "Zona Gris + NAT reactivo — infección confirmada en duda (R13)",
+        "nombre": "Zona gris + NAT reactivo — infección confirmada en duda (R13)",
         "datos": {
             "calidad_muestra":  "Normal",
             "marcador":         "HIV",
@@ -242,7 +242,7 @@ CASOS = [
         },
         "esperado": {
             "unidad":  "Descarte",
-            "donante": "Diferido Permanente",
+            "donante": "Diferido permanente",
             "regla":   "R13",
         },
     },

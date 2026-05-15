@@ -40,7 +40,7 @@ graph LR
 1. **Basados en Reglas (Determinísticos):** Usan lógica clásica booleana (Verdadero/Falso).
 2. **Probabilísticos:** Manejan la incertidumbre usando Teorema de Bayes o Redes Bayesianas.
 3. **Lógica Difusa (Fuzzy Logic):** Maneja grados de verdad. En lugar de blanco o negro, permite tonos de gris.
-* *Analogía:* En lugar de decir "el agua está caliente o fría", dice "el agua está un 70% caliente". En nuestro dominio, lo usamos para el valor analítico de S/CO (Zona Gris).
+* *Analogía:* En lugar de decir "el agua está caliente o fría", dice "el agua está un 70% caliente". En nuestro dominio, lo usamos para el valor analítico de S/CO (Zona gris).
 
 
 
@@ -81,8 +81,8 @@ Nuestro proyecto de **Seguridad Transfusional (ITT)** implementa conceptos del E
 * *Implementación:* Nuestro `inference_engine.py` iterará sobre la Base de Conocimientos buscando qué condiciones (premisas) hacen *match* con los datos de entrada del paciente.
 
 
-2. **Lógica Difusa (Fuzzificación):** * *Concepto:* En lugar de usar un umbral rígido que podría ser peligroso, mapeamos un valor numérico continuo (el S/CO de 0.00 a 50.00) a variables lingüísticas (`No Reactivo`, `Zona Gris`, `Reactivo`) asignando un nivel de certeza.
-* *Implementación:* Nuestro `fuzzy_engine.py` calcula el nivel de pertenencia de los datos del laboratorio a estas etiquetas, priorizando la precaución máxima (100% de duda) en la Zona Gris (0.9 a 1.1).
+2. **Lógica Difusa (Fuzzificación):** * *Concepto:* En lugar de usar un umbral rígido que podría ser peligroso, mapeamos un valor numérico continuo (el S/CO de 0.00 a 50.00) a variables lingüísticas (`No Reactivo`, `Zona gris`, `Reactivo`) asignando un nivel de certeza.
+* *Implementación:* Nuestro `fuzzy_engine.py` calcula el nivel de pertenencia de los datos del laboratorio a estas etiquetas, priorizando la precaución máxima (100% de duda) en la Zona gris (0.9 a 1.1).
 
 
-3. **Heurísticas del Dominio:** Nuestras reglas (como el descarte inmediato por *Zona Gris Inicial* o el algoritmo *VDRL->CLIA* para Sífilis) son conocimientos capturados de expertos humanos reales (Ingeniería de Conocimiento).
+3. **Heurísticas del Dominio:** Nuestras reglas (como el descarte inmediato por *Zona gris Inicial* o el algoritmo *VDRL->CLIA* para Sífilis) son conocimientos capturados de expertos humanos reales (Ingeniería de Conocimiento).

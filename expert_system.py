@@ -26,7 +26,7 @@ def evaluar_caso(datos):
 
     Retorna dict con:
         unidad           (str|None)  : "Apta" | "Descarte" | "Cuarentena"
-        donante          (str|None)  : "Habilitado" | "Diferido Temporal" | "Diferido Permanente"
+        donante          (str|None)  : "Habilitado" | "Diferido temporal" | "Diferido permanente"
         resultado        (str|None)  : "Rechazo Técnico" | "Pendiente" | None
         accion           (str|None)  : Acción intermedia requerida (ej. repetir, pedir CLIA)
         certeza          (float)     : Nivel de certeza difusa de la clasificación S/CO [0-100]

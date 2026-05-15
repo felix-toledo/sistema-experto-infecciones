@@ -39,9 +39,9 @@ graph TD
     B -- NO --> D[Evaluar Marcador y S/CO]
     
     D --> E{¿S/CO Inicial?}
-    E -- "Zona Gris (0.9 - 1.1)" --> F[Regla de Oro: Repetir por Duplicado]
+    E -- "Zona gris (0.9 - 1.1)" --> F[Regla de Oro: Repetir por Duplicado]
     F --> G{¿Repetición?}
-    G -- "No Reactivo / Gris" --> H[Descarte: Serología Dudosa]
+    G -- "No Reactivo / gris" --> H[Descarte: Serología Dudosa]
     G -- "Reactivo" --> I[Descarte: Confirmado]
     
     E -- "No Reactivo (< 0.9)" --> J{¿Tiene NAT?}
@@ -65,10 +65,10 @@ graph TD
 
 Para la implementación, Copilot y el equipo deben respetar estas definiciones:
 
-1. **Etiquetas SCO:** Solo usar `No Reactivo`, `Zona Gris` y `Reactivo`.
-2. **Rangos de Zona Gris:** Estrictamente entre **0.9 y 1.1**.
-3. **Regla de Oro de Zona Gris:** Si la muestra inicial es "Zona Gris", la unidad **siempre se descarta** (Serología Dudosa), incluso si la repetición da "No Reactivo".
-4. **Protocolo de Sífilis/Brucelosis:** Son excepciones al diferimiento permanente. Si son reactivos, el donante es **Diferido Temporal** hasta presentar alta médica.
+1. **Etiquetas SCO:** Solo usar `No Reactivo`, `Zona gris` y `Reactivo`.
+2. **Rangos de Zona gris:** Estrictamente entre **0.9 y 1.1**.
+3. **Regla de Oro de Zona gris:** Si la muestra inicial es "Zona gris", la unidad **siempre se descarta** (Serología Dudosa), incluso si la repetición da "No Reactivo".
+4. **Protocolo de Sífilis/Brucelosis:** Son excepciones al diferimiento permanente. Si son reactivos, el donante es **Diferido temporal** hasta presentar alta médica.
 5. **Condicional NAT:** El NAT (Prueba de Ácidos Nucleicos) solo se evalúa para **HIV, HBV y HCV**. Para los demás, se ignora.
 
 ---
@@ -107,7 +107,7 @@ El sistema ha sido validado con los siguientes escenarios mínimos:
 | 1 | 0.2, NR, No, HIV | **Apta** | R1 |
 | 2 | 0.5, Reactivo, No, HCV | **Descarte (Ventana)** | R4 |
 | 3 | 1.0, NR, No, HBV | **Descarte (Dudosa)** | R3 (Regla de Oro) |
-| 4 | VDRL: R, CLIA: R, Sífilis | **Diferido Temporal** | R10 |
+| 4 | VDRL: R, CLIA: R, Sífilis | **Diferido temporal** | R10 |
 | 5 | 0.1, NR, SÍ, Chagas | **Descarte (Riesgo)** | R6 |
 | 6 | Hemolizada | **Cuarentena (Técnico)** | R20 |
 

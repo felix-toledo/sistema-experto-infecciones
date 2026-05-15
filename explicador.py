@@ -2,9 +2,9 @@
 Subsistema de Explicación del Sistema Experto de Seguridad Transfusional.
 
 Genera la narrativa de trazabilidad de la decisión, incluyendo la justificación
-de la acción elegida por la lógica difusa cuando el S/CO cae en Zona Gris.
+de la acción elegida por la lógica difusa cuando el S/CO cae en Zona gris.
 
-Umbrales difusos activos (Zona Gris, 0.9 ≤ S/CO ≤ 1.1):
+Umbrales difusos activos (Zona gris, 0.9 ≤ S/CO ≤ 1.1):
     certeza_sco < 30 %            → Solicitar nueva muestra del donante
     30 % ≤ certeza_sco < 45 %    → Pedir nueva muestra (baja certeza técnica)
     certeza_sco ≥ 45 %            → Repetir análisis por duplicado
@@ -49,11 +49,11 @@ def generar_explicacion(datos, hechos, decision, reglas_activadas):
                       f"(Certeza fuzzy: {certeza:.1f} %)")
 
         # ------------------------------------------------------------------
-        # Sección 1a: Razonamiento difuso activo — solo en Zona Gris
+        # Sección 1a: Razonamiento difuso activo — solo en Zona gris
         # ------------------------------------------------------------------
-        if etiqueta == "Zona Gris":
+        if etiqueta == "Zona gris":
             lineas.append("")
-            lineas.append("  RAZONAMIENTO DIFUSO ACTIVO (Zona Gris):")
+            lineas.append("  RAZONAMIENTO DIFUSO ACTIVO (Zona gris):")
             lineas.append(f"    S/CO = {sco_val:.2f}  |  Certeza difusa = {certeza:.1f} %")
             lineas.append(f"    (Certeza mide la proximidad al límite 'No Reactivo':")
             lineas.append(f"     100 % = borde inferior 0.9 · 0 % = borde superior 1.1)")

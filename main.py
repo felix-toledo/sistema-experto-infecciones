@@ -489,7 +489,7 @@ class App(tk.Tk):
             etiqueta, certeza = fuzzificar_sco(val)
             color = {
                 "No Reactivo": PAL["no_reactivo"],
-                "Zona Gris":   PAL["zona_gris"],
+                "Zona gris":   PAL["zona_gris"],
                 "Reactivo":    PAL["reactivo"],
             }.get(etiqueta, PAL["texto_dim"])
             self._sco_label.config(text=f"→ {etiqueta} ({certeza:.0f}%)", fg=color)
@@ -643,8 +643,8 @@ class App(tk.Tk):
             fg=color)
         self._badge_donante.config(
             text=donante or "—",
-            fg=PAL["cuarentena"] if donante and "Permanente" in donante
-               else (PAL["zona_gris"] if donante and "Temporal" in donante
+            fg=PAL["cuarentena"] if donante and "permanente" in donante
+               else (PAL["zona_gris"] if donante and "temporal" in donante
                      else PAL["apta"]))
         self._badge_certeza.config(
             text=f"{certeza:.1f} %",
@@ -785,7 +785,7 @@ class App(tk.Tk):
             ("ARQUITECTURA", 11, True, PAL["accent"]),
             ("El sistema combina Lógica Difusa y un Motor de Reglas determinístico:", 10, False, PAL["texto"]),
             ("", 4, False, PAL["bg"]),
-            ("  fuzzy_engine.py   →  Fuzzifica el valor S/CO (0.9–1.1 = Zona Gris)", 9, False, PAL["texto_dim"]),
+            ("  fuzzy_engine.py   →  Fuzzifica el valor S/CO (0.9–1.1 = Zona gris)", 9, False, PAL["texto_dim"]),
             ("  knowledge_base.py →  20 reglas clínicas extraídas del experto humano", 9, False, PAL["texto_dim"]),
             ("  inference_engine.py → Forward Chaining con arbitraje por jerarquía", 9, False, PAL["texto_dim"]),
             ("  expert_system.py  →  Orquestador + Subsistema de Explicación", 9, False, PAL["texto_dim"]),
@@ -793,8 +793,8 @@ class App(tk.Tk):
             ("", 6, False, PAL["bg"]),
             ("JERARQUÍA DE DECISIÓN", 11, True, PAL["accent"]),
             ("  Cuarentena / Rechazo Técnico  (prioridad máxima)", 9, False, PAL["cuarentena"]),
-            ("  Descarte + Diferido Permanente", 9, False, PAL["descarte"]),
-            ("  Descarte + Diferido Temporal", 9, False, PAL["zona_gris"]),
+            ("  Descarte + Diferido permanente", 9, False, PAL["descarte"]),
+            ("  Descarte + Diferido temporal", 9, False, PAL["zona_gris"]),
             ("  Unidad Apta / Donante Habilitado", 9, False, PAL["apta"]),
             ("", 6, False, PAL["bg"]),
             ("ZONA GRIS (Lógica Difusa)", 11, True, PAL["accent"]),
